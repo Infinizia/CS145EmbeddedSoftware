@@ -4,5 +4,7 @@
 
 avr.c
 
+lcd.c
+
 main.c
 

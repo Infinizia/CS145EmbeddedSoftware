@@ -6,7 +6,9 @@
  */ 
 
 #include <avr/io.h>
+#include <stdio.h>
 #include "avr.h"
+#include "lcd.h"
 
 
 int is_pressed(int r, int c)
@@ -45,30 +47,102 @@ int get_key()
 }
 void init()
 {
-	//Setting DDRC for input mode
-	CLR_BIT(DDRC,0);
-	SET_BIT(PORTC,0);
+}
+
+void blink_led(int delay_ms)
+{
+	//test blinking
+	SET_BIT(PORTB,0);		//Turn on LED
+	wait_avr(delay_ms);			//delay
+	CLR_BIT(PORTB,0);		//Turn off LED
+	wait_avr(delay_ms);			//delay
 }
 int main(void)
 {
-	SET_BIT(DDRB,0);				//Setting pin 0 for output mode
-	CLR_BIT(PORTB,0);				//Turn off LED
-	//init();
-    /* Replace with your application code */
+	// Blink LED Test
+	//SET_BIT(DDRB,0);				//Setting pin 0 for output mode
+	//CLR_BIT(PORTB,0);				//Turn off LED
+	
+	// LCD Display
+	ini_lcd();
+
+	int key;
+	char buf[17];
+	ini_avr();
+
     while (1) 
     {
-		int key = get_key();
-		if (key == 0x01)
-		{
-			//test blinking
-			SET_BIT(PORTB,0);		//Turn on LED
-			wait_avr(500);			//delay
-			CLR_BIT(PORTB,0);		//Turn off LED
-			wait_avr(500);			//delay
-		}
-		else
-			CLR_BIT(PINC,0);
+		key = get_key();
+		pos_lcd(0, 0);
 		
+		if (key == 0x01) // Key 1
+		{
+			sprintf(buf, "%02i", key);
+			puts_lcd2(buf);
+
+			//blink_led(100);			
+		}
+		else if (key == 0x02) // 2
+		{
+			blink_led(200);			
+		}
+		else if (key == 0x03) // 3
+		{
+			blink_led(300);
+		}
+		else if (key == 0x04) // Key A
+		{
+			blink_led(100);
+		}
+		else if (key == 0x05) // 4
+		{
+			blink_led(400);
+		}
+		else if (key == 0x06) // 5
+		{
+			blink_led(500);
+		}
+		else if (key == 0x07) // 6
+		{
+			blink_led(600);
+		}
+		else if (key == 0x08) // B
+		{
+			blink_led(100);
+		}
+		else if (key == 0x09) // 7
+		{
+			blink_led(700);
+		}
+		else if (key == 0x0A) // 8
+		{
+			blink_led(800);
+		}
+		else if (key == 0x0B) // 9
+		{
+			blink_led(900);
+		}
+		else if (key == 0x0C) // C
+		{
+			blink_led(100);
+		}
+		else if (key == 0x0D) // Key *
+		{
+			blink_led(200);
+		}
+		else if (key == 0x0E) // 0
+		{
+			blink_led(1000);
+		}
+		else if (key == 0x0F) // #
+		{
+			blink_led(200);
+		}
+		else if (key == 0x10) // D
+		{
+			blink_led(400);
+		}
+
     }
 }
 
