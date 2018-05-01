@@ -2,7 +2,7 @@
  * proj2.c
  *
  * Created: 4/25/2018 10:06:54 AM
- * Author : Divergent
+ * Author : Danny and Kevin
  */ 
 #include <avr/io.h>
 #include <stdio.h>
@@ -15,18 +15,17 @@
 
 /*Global Variables Declarations*/
 char buf[17];	// display 16 + '\0' char
-
-// 30 - 4, 6, 9, 11
+static int mode = 1;
+// 30 - 4, 6, 9, 11s
 // 31 - 1, 3, 5, 7, 8, 10, 12
 // 28, 29 - 2
-int year = 2016;
-int month = 2;
-int day = 28;
+static int year = 2018;
+static int month = 1;
+static int day = 1;
 
-int hours = 23;
-int minutes = 58;
-int seconds = 00;
-
+int hours = 0;
+int minutes = 0;
+int seconds = 0;
 
 int is_pressed(int r, int c)
 {
@@ -141,61 +140,6 @@ void increment_date()
 		else
 			day++;
 
-		/*
-		if (day == 31 && month == 1)
-		{
-			month=2;
-			day=1;
-		}
-		else if (day == daysInFeb && month == 2) // February Case, need to account leap year
-		{	
-			month = 3;
-			day = 1;
-		}
-		else if (day == 31 && month == 3)
-		{	month = 4;
-			day = 1;
-		}
-		else if (day == 30 && month == 4)
-		{	month = 5;
-			day = 1;
-		}
-		else if (day == 31 && month == 5)
-		{	month = 6;
-			day = 1;
-		}
-		else if (day == 30 && month == 6)
-		{	month = 7;
-			day = 1;
-		}
-		else if (day == 31 && month == 7)
-		{	month = 8;
-			day = 1;
-		}
-		else if (day == 31 && month == 8)
-		{	month = 9;
-			day = 1;
-		}
-		else if (day == 30 && month == 9)
-		{	month = 10;
-			day = 1;
-		}
-		else if (day == 31 && month == 10)
-		{	month = 11;
-			day = 1;
-		}
-		else if (day == 30 && month == 11)
-		{	month = 12;
-			day = 1;
-		}
-		else if (day == 31 && month == 12)
-		{	month = 1;
-			day = 1;
-			year++;
-		}
-		else
-			day++;
-		*/
 	}		
 }
 void increment_timer()
@@ -258,104 +202,370 @@ void display(int militaryTime) // 1 = military time, 2 = 12 hours
 		// increment time based on clock speed
 		increment_timer();
 		wait_avr(CLOCKSPEED);
+
+
+
+
+		// MAP C KEY to 12 hour mode
+		int key = get_key_value();
+		if (key == 'C')
+		{	
+			if (mode == 1)
+				mode = 2;
+			else if (mode == 2)
+				mode = 1;
+			display(mode);
+		}
+
+
+		// MAP D KEY to INPUT MODE
+		key = get_key_value();
+		if (key == 'D')
+		{
+			clr_lcd();
+			input_mode();
+		}
+
 	}
 }
+
 
 void input_mode()
 {
-	sprintf(buf, "%s",  "Enter Year:");
-	pos_lcd(0, 0);
-	puts_lcd2(buf);
+	char buf2[17];
+	
+		sprintf(buf2, "%s",  "Enter Year:"); // YEAR
+		pos_lcd(0, 0);
+		puts_lcd2(buf2);
 
-	int numOfChar = 0;
-	int yearArray[4];
-	while (numOfChar < 4)
-	{
-		yearArray[numOfChar] = key_value();
+		int yFirst = get_key_value();
+		while (yFirst == -1)
+		{
+			yFirst = get_key_value();
+			if (yFirst == 'D')
+				display(mode);
+		}
 
-		sprintf(buf, "%i",  yearArray);
+		sprintf(buf2, "%i", yFirst);
 		pos_lcd(1, 0);
-		puts_lcd2(buf);
+		puts_lcd2(buf2);
 
-		numOfChar++;
-	}
+		wait_avr(100);
+		int ySecond = get_key_value();
+		while (ySecond == -1)
+		{
+			ySecond = get_key_value();
+			if (ySecond == 'D')
+			display(mode);
+		}
+
+		sprintf(buf2, "%i", ySecond);
+		pos_lcd(1, 1);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		int yThird = get_key_value();
+		while (yThird == -1)
+		{
+			yThird = get_key_value();
+			if (yThird == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", yThird);
+		pos_lcd(1, 2);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+
+		int yFourth = get_key_value();
+		while (yFourth == -1)
+		{
+			yFourth = get_key_value();
+			if (yFourth == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", yFourth);
+		pos_lcd(1, 3);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		// display year
+		year = (1000*yFirst) + (100*ySecond) + (10*yThird) + yFourth;
+
+
+		clr_lcd();
+
+		sprintf(buf2, "%s",  "Enter Month:"); // MONTH
+		pos_lcd(0, 0);
+		puts_lcd2(buf2);
+
+		int monFirst = get_key_value();
+		while (monFirst == -1)
+		{
+			monFirst = get_key_value();
+			if (monFirst == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", monFirst);
+		pos_lcd(1, 0);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+		int monSecond = get_key_value();
+		while (monSecond == -1)
+		{
+			monSecond = get_key_value();
+			if (monSecond == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", monSecond);
+		pos_lcd(1, 1);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		month = (10*monFirst) + monSecond;
+
+		
+		clr_lcd();
+
+		sprintf(buf2, "%s",  "Enter Day:"); // DAY
+		pos_lcd(0, 0);
+		puts_lcd2(buf2);
+
+		int dFirst = get_key_value();
+		while (dFirst == -1)
+		{
+			dFirst = get_key_value();
+			if (dFirst == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", dFirst);
+		pos_lcd(1, 0);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+		int dSecond = get_key_value();
+		while (dSecond == -1)
+		{
+			dSecond = get_key_value();
+			if (dSecond == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", dSecond);
+		pos_lcd(1, 1);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		day = (10*dFirst) + dSecond;
+
+
+		// TIME
+		clr_lcd();
+
+		sprintf(buf2, "%s",  "Enter Hour:"); // HOUR
+		pos_lcd(0, 0);
+		puts_lcd2(buf2);
+
+		int hFirst = get_key_value();
+		while (hFirst == -1)
+		{
+			hFirst = get_key_value();
+			if (hFirst == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", hFirst);
+		pos_lcd(1, 0);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		int hSecond = get_key_value();
+		while (hSecond == -1)
+		{
+			hSecond = get_key_value();
+			if (hSecond == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", hSecond);
+		pos_lcd(1, 1);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		hours = (10*hFirst) + hSecond;
+
+		clr_lcd();
+
+		sprintf(buf2, "%s",  "Enter Minute:"); // MINUTE
+		pos_lcd(0, 0);
+		puts_lcd2(buf2);
+
+		int minFirst = get_key_value();
+		while (minFirst == -1)
+		{
+			minFirst = get_key_value();
+			if (minFirst == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", minFirst);
+		pos_lcd(1, 0);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		int minSecond = get_key_value();
+		while (minSecond == -1)
+		{
+			minSecond = get_key_value();
+			if (minSecond == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", minSecond);
+		pos_lcd(1, 1);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		minutes = (10*minFirst) + minSecond;
+
+		clr_lcd();
+
+		sprintf(buf2, "%s",  "Enter Second:"); // SECONDS
+		pos_lcd(0, 0);
+		puts_lcd2(buf2);
+
+		int secFirst = get_key_value();
+		while (secFirst == -1)
+		{
+			secFirst = get_key_value();
+			if (secFirst == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", secFirst);
+		pos_lcd(1, 0);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		int secSecond = get_key_value();
+		while (secSecond == -1)
+		{
+			secSecond = get_key_value();
+			if (secSecond == 'D')
+				display(mode);
+		}
+
+		sprintf(buf2, "%i", secSecond);
+		pos_lcd(1, 1);
+		puts_lcd2(buf2);
+
+		wait_avr(100);
+
+		seconds = (10*secFirst) + secSecond;
+
+		clr_lcd();
+
+		display(mode);
 
 
 }
 
-int key_value()
+
+int get_key_value()
 {
-	int key = get_key();
-	int value = 0;
+	int key;
 
-	if (key == 0x01) // Key 1
+	while(1)
 	{
-		value = 1;
-	}
-	else if (key == 0x02) // 2
-	{
-		value = 2;
+		wait_avr(50);
 
-	}
-	else if (key == 0x03) // 3
-	{
-		value = 3;
-	}
-	else if (key == 0x04) // Key A
-	{
-		// A
-	}
-	else if (key == 0x05) // 4
-	{
+		key = get_key();
 
-		value = 4;
-
+		if (key == 0x01) // Key 1
+		{
+			return 1;
+		}
+		else if (key == 0x02) // 2
+		{
+			return 2;
+		}
+		else if (key == 0x03) // 3
+		{
+			return 3;
+		}
+		else if (key == 0x04) // Key A
+		{
+			//
+		}
+		else if (key == 0x05) // 4
+		{
+			return 4;
+		}
+		else if (key == 0x06) // 5
+		{
+			return 5;
+		}
+		else if (key == 0x07) // 6
+		{
+			return 6;
+		}
+		else if (key == 0x08) // B
+		{
+			// B
+		}
+		else if (key == 0x09) // 7
+		{
+			return 7;
+		}
+		else if (key == 0x0A) // 8
+		{
+			return 8;
+		}
+		else if (key == 0x0B) // 9
+		{
+			return 9;
+		}
+		else if (key == 0x0C) // C
+		{
+			return 'C';
+		}
+		else if (key == 0x0D) // Key *
+		{
+			// *
+		}
+		else if (key == 0x0E) // 0
+		{
+			return 0;
+		}
+		else if (key == 0x0F) // #
+		{
+			// #
+		}
+		else if (key == 0x10) // D
+		{
+			return 'D';
+		}
+		else
+		{
+			return -1;
+		}
 	}
-	else if (key == 0x06) // 5
-	{
-		value = 5;
-	}
-	else if (key == 0x07) // 6
-	{
-		value = 6;
-	}
-	else if (key == 0x08) // B
-	{
-		// B
-	}
-	else if (key == 0x09) // 7
-	{
-		value = 7;
-	}
-	else if (key == 0x0A) // 8
-	{
-		value = 8;
-	}
-	else if (key == 0x0B) // 9
-	{
-		value = 9;
-	}
-	else if (key == 0x0C) // C
-	{
-		// C
-	}
-	else if (key == 0x0D) // Key *
-	{
-		// *
-	}
-	else if (key == 0x0E) // 0
-	{
-		value = 0;
-	}
-	else if (key == 0x0F) // #
-	{
-		// #
-	}
-	else if (key == 0x10) // D
-	{
-		// D
-	}
-	return value;
 }
 
 
@@ -370,6 +580,7 @@ int main(void)
 	ini_lcd();
 	ini_avr();
 
+	//display(1);
 
 	input_mode();
 
@@ -377,7 +588,5 @@ int main(void)
 	// this will be programmed by button input
 	//display(2); // 1 is military , 2 is 12 hr format
 
-
-   
 }
 
