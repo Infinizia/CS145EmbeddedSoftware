@@ -8,7 +8,7 @@
  #include "avr.h"
 
 
- void init_speaker()
+void init_speaker()
  {
 	 SET_BIT(DDRA,0);
 	 SET_BIT(PORTA,0);
@@ -28,7 +28,7 @@ void play_note(int freq, int dur)
 	}
 }
 
- void play_note2(int freq, int dur, double speed)
+void play_note2(int freq, int dur, double speed)
  {
 	 double period = (1.0 / freq) * 10000; // 440HZ = 2.27 ms in 1 sec
 	 double t = period/2;
@@ -42,7 +42,7 @@ void play_note(int freq, int dur)
 	 }
  }
 
- void play_music(struct note *song, int n) // n = number of note in the song array
+void play_music(struct note *song, int n) // n = number of note in the song array
  {
 	 for (int i = 0; i < n;++i)
 	 {
@@ -50,6 +50,7 @@ void play_note(int freq, int dur)
 		 wait_avr(100);
 	 }
  }
+
 void play_music2(struct note *song, int n, double speed) // n = number of note in the song array
 {
 	for (int i = 0; i < n;++i)
@@ -63,7 +64,6 @@ void play_music2(struct note *song, int n, double speed) // n = number of note i
  /***************** SONG ******************/
  void happyBirthday(double speed)
  {
-	 displayWhilePlaying(speed);
 	 struct note song[] = {
 		 { C4, 1  }, //1
 		 { C4, 1  }, //1
@@ -87,15 +87,13 @@ void play_music2(struct note *song, int n, double speed) // n = number of note i
 		 { B4, 2  }, //7
 		 { F4, 1  }, //4
 		 { G4, 1  }, //5
-		 { F4, 1  } //4
+		 { F4, 1  }  //4
 	 };
 	 play_music2(song, 23, speed); //has 23 notes
-	 SongSpeedMenu();
  }
 
  void twinkleStar(double speed)
  {
-	 displayWhilePlaying(speed);
 	 struct note song[] = {
 		 // verse 1
 		 { C4, 1  },
@@ -145,58 +143,28 @@ void play_music2(struct note *song, int n, double speed) // n = number of note i
 		 { C4, 3  }
 	 };
 	 play_music2(song, 42, speed); //has 42 notes
-	 SongSpeedMenu();
- }
- /*****************************************/
+ } 
 
- void displayWhilePlaying(double speed)
- {
-	 char buf2[17];
-	 clr_lcd();
+ void twinkleStarShort(double speed) //14 note
+  {
+	  struct note song[] = {
+		  // verse 1
+		  { C4, 1  },
+		  { C4, 1  },
+		  { G4, 1  },
+		  { G4, 1  },
+		  { A4, 1  },
+		  { A4, 1  },
+		  { G4, 2  },
+		  { F4, 1  },
+		  { F4, 1  },
+		  { E4, 1  },
+		  { E4, 1  },
+		  { D4, 1  },
+		  { D4, 1  },
+		  { C4, 2  }
+	  };
+	  play_music2(song, 14, speed); //has 14 notes
+  }
 
-	 if (speed == SLOWEST)
-	 {
-		 sprintf(buf2, "%s",  "Speed 1: ");
-		 pos_lcd(0, 0);
-		 puts_lcd2(buf2);
-		 sprintf(buf2, "%s",  "Slowest");
-		 pos_lcd(1, 0);
-		 puts_lcd2(buf2);
-	 }
-	 else if (speed == SLOW)
-	 {
-		 sprintf(buf2, "%s",  "Speed 2: ");
-		 pos_lcd(0, 0);
-		 puts_lcd2(buf2);
-		 sprintf(buf2, "%s",  "Slower");
-		 pos_lcd(1, 0);
-		 puts_lcd2(buf2);
-	 }
-	 else if (speed == NORMAL)
-	 {
-		 sprintf(buf2, "%s",  "Speed 3: ");
-		 pos_lcd(0, 0);
-		 puts_lcd2(buf2);
-		 sprintf(buf2, "%s",  "Normal");
-		 pos_lcd(1, 0);
-		 puts_lcd2(buf2);
-	 }
-	 else if (speed == FASTER)
-	 {
-		 sprintf(buf2, "%s",  "Speed 4: ");
-		 pos_lcd(0, 0);
-		 puts_lcd2(buf2);
-		 sprintf(buf2, "%s",  "Faster");
-		 pos_lcd(1, 0);
-		 puts_lcd2(buf2);
-	 }
-	 else if (speed == FASTEST)
-	 {
-		 sprintf(buf2, "%s",  "Speed 5: ");
-		 pos_lcd(0, 0);
-		 puts_lcd2(buf2);
-		 sprintf(buf2, "%s",  "Fastest");
-		 pos_lcd(1, 0);
-		 puts_lcd2(buf2);
-	 }
- }
+

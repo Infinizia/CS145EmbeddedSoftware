@@ -38,6 +38,7 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../avr.c \
+../game.c \
 ../keypad.c \
 ../lcd.c \
 ../main.c \
@@ -52,6 +53,7 @@ ASM_SRCS +=
 
 OBJS +=  \
 avr.o \
+game.o \
 keypad.o \
 lcd.o \
 main.o \
@@ -59,6 +61,7 @@ music.o
 
 OBJS_AS_ARGS +=  \
 avr.o \
+game.o \
 keypad.o \
 lcd.o \
 main.o \
@@ -66,6 +69,7 @@ music.o
 
 C_DEPS +=  \
 avr.d \
+game.d \
 keypad.d \
 lcd.d \
 main.d \
@@ -73,6 +77,7 @@ music.d
 
 C_DEPS_AS_ARGS +=  \
 avr.d \
+game.d \
 keypad.d \
 lcd.d \
 main.d \
@@ -92,6 +97,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

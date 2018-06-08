@@ -63,11 +63,11 @@ unsigned int get_key_value()
 	}
 	// If * pressed
 	else if(is_pressed(3,0)){
-		return 42;
+		return '*';
 	}
 	// If # pressed
 	else if(is_pressed(3,2)){
-		return 35;
+		return '#';
 	}
 	//otherwise just return some random char for not pressed
 	return 'Z';

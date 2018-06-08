@@ -4,6 +4,8 @@
 
 avr.c
 
+game.c
+
 keypad.c
 
 lcd.c
